@@ -1,0 +1,2 @@
+# extension-github
+GitHub authentication
