@@ -1,0 +1,48 @@
+{
+  "name": "github-account",
+  "displayName": "GitHub Account Authentication",
+  "description": "Sign in and authenticate with a GitHub account",
+  "version": "0.0.1",
+  "icon": "icon.png",
+  "publisher": "redhat",
+  "license": "Apache-2.0",
+  "engines": {
+    "podman-desktop": "^1.19.0"
+  },
+  "main": "./dist/extension.cjs",
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest watch --coverage",
+    "format:check": "biome format",
+    "format:fix": "biome format --write",
+    "lint:check": "eslint . && biome lint",
+    "lint:fix": "eslint . --fix && biome lint --fix",
+    "watch": "vite build -w",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@eslint/compat": "^1.3.2",
+    "@octokit/rest": "^22.0.0",
+    "@podman-desktop/api": "1.19.2",
+    "@types/node": "^22",
+    "@vitest/coverage-v8": "^3.2.4",
+    "biome": "^0.3.3",
+    "eslint": "^9.31.0",
+    "eslint-import-resolver-custom-alias": "^1.3.2",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-etc": "^2.0.3",
+    "eslint-plugin-file-progress": "^3.0.2",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-no-null": "^1.0.2",
+    "eslint-plugin-redundant-undefined": "^1.0.0",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "eslint-plugin-sonarjs": "^3.0.4",
+    "eslint-plugin-unicorn": "^60.0.0",
+    "globals": "^16.3.0",
+    "typescript": "5.8.3",
+    "typescript-eslint": "^8.40.0",
+    "vite": "^7.0.4",
+    "vitest": "^3.2.4"
+  }
+}
