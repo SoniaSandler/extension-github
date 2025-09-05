@@ -15,7 +15,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-FROM ghcr.io/soniasandler/extension-github:next AS builder
+FROM ghcr.io/soniasandler/podman-desktop-github-ext-builder:next AS builder
 
 COPY . .
 
