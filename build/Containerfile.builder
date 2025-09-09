@@ -15,7 +15,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-FROM registry.access.redhat.com/ubi9/nodejs-22
+FROM registry.access.redhat.com/ubi9/nodejs-22:9.6-1757333865
 
 COPY package.json .
 COPY pnpm-lock.yaml .
