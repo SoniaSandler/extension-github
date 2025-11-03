@@ -21,6 +21,7 @@ import * as extensionApi from '@podman-desktop/api';
 
 import { waitForDeviceCodeAccessToken } from './auth-flows-helpers';
 import { config } from './config';
+import { GITHUB_SCOPES } from './github-scopes';
 
 export let sessionId = 1;
 
@@ -83,7 +84,7 @@ export async function deviceFlow(scopes: string[]): Promise<extensionApi.Authent
 export async function PATFlow(scopes: string[]): Promise<extensionApi.AuthenticationSession> {
   const inputBoxOptions: extensionApi.InputBoxOptions = {
     title: 'Authenticate to GitHub with Personal Access Token',
-    prompt: `Enter you GitHub Personal Access Token in the input box below. Make sure that this PAT has all the necessary permissions: ${scopes.join(', ')}`,
+    prompt: `Enter you GitHub Personal Access Token in the input box. Make sure that this PAT has all the necessary permissions: ${scopes.join(', ')}`,
     placeHolder: 'Enter PAT',
     password: true,
   };
@@ -99,6 +100,13 @@ export async function PATFlow(scopes: string[]): Promise<extensionApi.Authentica
   });
   const user = await octokit.rest.users.getAuthenticated();
 
+  const authorizedScopes = user.headers['x-oauth-scopes']?.split(', ').flatMap(scope => GITHUB_SCOPES[scope] ? [scope, ...GITHUB_SCOPES[scope]] : [scope]);
+
+  const missingScopes = scopes.filter(scope => !authorizedScopes?.includes(scope));
+  if (missingScopes.length > 0) {
+    console.warn(`Some required permission scopes are missing from the PAT scopes: ${missingScopes.join(', ')}. Please check and update the token as necessary.`);
+  }
+  
   return {
     id: `github-PAT-${sessionId++}`,
     accessToken: PATToken,
@@ -106,6 +114,6 @@ export async function PATFlow(scopes: string[]): Promise<extensionApi.Authentica
       id: `${user.data.id}`,
       label: user.data.login,
     },
-    scopes: scopes,
+    scopes: authorizedScopes ?? [],
   };
 } 
