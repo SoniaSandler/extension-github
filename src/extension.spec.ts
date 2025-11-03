@@ -18,7 +18,7 @@
 
 import { resolve } from 'node:path';
 
-import * as extensionApi from '@podman-desktop/api';
+import type * as extensionApi from '@podman-desktop/api';
 import { expect, test, vi } from 'vitest';
 
 import { activate, deactivate } from './extension';
