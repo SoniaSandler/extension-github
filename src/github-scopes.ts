@@ -17,50 +17,50 @@
  ***********************************************************************/
 
 export const GITHUB_SCOPES: { [key: string] : string[]} = {
-  "repo": [
-    "repo:status",
-    "repo_deployment",
-    "public_repo",
-    "repo:invite",
-    "security_events"
+  'repo': [
+    'repo:status',
+    'repo_deployment',
+    'public_repo',
+    'repo:invite',
+    'security_events',
   ],
-  "admin:repo_hook": [
-    "write:repo_hook",
-    "read:repo_hook"
+  'admin:repo_hook': [
+    'write:repo_hook',
+    'read:repo_hook',
   ],
-  "write:repo_hook": [
-    "read:repo_hook"
+  'write:repo_hook': [
+    'read:repo_hook',
   ],
-  "admin:org": [
-    "write:org",
-    "read:org"
+  'admin:org': [
+    'write:org',
+    'read:org',
   ],
-  "write:org": [
-    "read:org"
+  'write:org': [
+    'read:org',
   ],
-  "admin:public_key": [
-    "write:public_key",
-    "read:public_key"
+  'admin:public_key': [
+    'write:public_key',
+    'read:public_key',
   ],
-  "write:public_key": [
-    "read:public_key"
+  'write:public_key': [
+    'read:public_key',
   ],
-  "user": [
-    "read:user",
-    "user:email",
-    "user:follow"
+  'user': [
+    'read:user',
+    'user:email',
+    'user:follow',
   ],
-  "project": [
-    "read:project"
+  'project': [
+    'read:project',
   ],
-  "write:packages": [
-    "read:packages"
+  'write:packages': [
+    'read:packages',
   ],
-  "admin:gpg_key": [
-    "write:gpg_key",
-    "read:gpg_key"
+  'admin:gpg_key': [
+    'write:gpg_key',
+    'read:gpg_key',
   ],
-  "write:gpg_key": [
-    "read:gpg_key"
+  'write:gpg_key': [
+    'read:gpg_key',
   ],
-}
+};

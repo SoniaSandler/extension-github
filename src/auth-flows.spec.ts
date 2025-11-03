@@ -37,7 +37,7 @@ vi.mock('@octokit/rest', () => ({
           },
           headers: {
             'x-oauth-scopes': 'admin:org, read:user, read:project',
-          }
+          },
         })),
       },
     },
@@ -132,7 +132,7 @@ test('PATFlow', async () => {
 
   expect(extensionApi.window.showInputBox).toBeCalledWith(inputBoxOptions);
   expect(Octokit).toHaveBeenCalledWith({auth: 'PATtoken1234'});
-  expect(consoleWarn).toHaveBeenCalledWith('Some required permission scopes are missing from the PAT scopes: some scope. Please check and update the token as necessary.')
+  expect(consoleWarn).toHaveBeenCalledWith('Some required permission scopes are missing from the PAT scopes: some scope. Please check and update the token as necessary.');
 
   expect(newPATSession).toEqual({
     id: `github-PAT-${sessionIdBeforeCall}`,
