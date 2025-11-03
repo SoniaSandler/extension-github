@@ -38,7 +38,7 @@ test('Session manager created and used upon extension activation', async () => {
   expect(ProviderSessionManager).toHaveBeenCalledWith(extensionContextMcok);
   expect(ProviderSessionManager.prototype.registerAuthenticationProvider).toHaveBeenCalled();
   expect(ProviderSessionManager.prototype.restoreSessions).toHaveBeenCalled();
-  expect(extensionApi.authentication.getSession).toHaveBeenCalledWith('github-authentication', [], { createIfNone: false });
+  expect(ProviderSessionManager.prototype.createSessionEntry).toHaveBeenCalled();
 });
 
 test('save sessions upon extension deactivation', async () => {

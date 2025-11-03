@@ -29,11 +29,7 @@ export async function activate(context: extensionApi.ExtensionContext): Promise<
   providerSessionManager = new ProviderSessionManager(context);
   await providerSessionManager.registerAuthenticationProvider();
   await providerSessionManager.restoreSessions();
-  await createSessionEntry();
-}
-
-async function createSessionEntry(): Promise<void> {
-  await extensionApi.authentication.getSession('github-authentication', [], { createIfNone: false });
+  await providerSessionManager.createSessionEntry();
 }
 
 // Deactivate the extension

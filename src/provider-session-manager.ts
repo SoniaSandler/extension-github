@@ -38,6 +38,10 @@ export class ProviderSessionManager {
       this.ghSessions = [];
     }
   }
+
+  async createSessionEntry(): Promise<void> {
+    await extensionApi.authentication.getSession('github-authentication', [], { createIfNone: false });
+  }
   
   async createSession(scopes: string[]): Promise<extensionApi.AuthenticationSession> {
     let newAuthSession: extensionApi.AuthenticationSession;
@@ -83,6 +87,10 @@ export class ProviderSessionManager {
     this.onDidChangeSessions.fire({
       removed: [removedSession],
     });
+
+    if (this.ghSessions.length === 0 ) {
+      await this.createSessionEntry();
+    }
   }
 
   async registerAuthenticationProvider(): Promise<void> {

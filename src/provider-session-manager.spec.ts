@@ -151,6 +151,18 @@ test('removeSession', async () => {
   await expect(sessionManager.removeSession('123')).rejects.toThrowError('Session with id 123 not found');
 });
 
+test('remove last session', async () => {
+  vi.mocked(extensionContextMock.secrets.get).mockResolvedValue(JSON.stringify([sessionsMock[0]]));
+  await sessionManager.restoreSessions();
+
+  await sessionManager.removeSession('session1');
+  
+  const currentSessions = await sessionManager.getSessions();
+  expect(currentSessions).toEqual([]);
+
+  expect(extensionApi.authentication.getSession).toHaveBeenCalledWith('github-authentication', [], { createIfNone: false });
+});
+
 test('saveSessions', async () => {
   // make sure that there are no sessions saved
   const currentSessions = await sessionManager.getSessions();
