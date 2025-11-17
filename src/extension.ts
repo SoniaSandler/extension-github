@@ -16,7 +16,7 @@
  * SPDX-License-Identifier: Apache-2.0
  ***********************************************************************/
 
-import * as extensionApi from '@podman-desktop/api';
+import type * as extensionApi from '@podman-desktop/api';
 
 import { ProviderSessionManager } from './provider-session-manager';
 
@@ -29,11 +29,7 @@ export async function activate(context: extensionApi.ExtensionContext): Promise<
   providerSessionManager = new ProviderSessionManager(context);
   await providerSessionManager.registerAuthenticationProvider();
   await providerSessionManager.restoreSessions();
-  await createSessionEntry();
-}
-
-async function createSessionEntry(): Promise<void> {
-  await extensionApi.authentication.getSession('github-authentication', [], { createIfNone: false });
+  await providerSessionManager.createSessionEntry();
 }
 
 // Deactivate the extension

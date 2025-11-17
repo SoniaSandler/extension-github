@@ -18,7 +18,7 @@
 
 import { resolve } from 'node:path';
 
-import * as extensionApi from '@podman-desktop/api';
+import type * as extensionApi from '@podman-desktop/api';
 import { expect, test, vi } from 'vitest';
 
 import { activate, deactivate } from './extension';
@@ -38,7 +38,7 @@ test('Session manager created and used upon extension activation', async () => {
   expect(ProviderSessionManager).toHaveBeenCalledWith(extensionContextMcok);
   expect(ProviderSessionManager.prototype.registerAuthenticationProvider).toHaveBeenCalled();
   expect(ProviderSessionManager.prototype.restoreSessions).toHaveBeenCalled();
-  expect(extensionApi.authentication.getSession).toHaveBeenCalledWith('github-authentication', [], { createIfNone: false });
+  expect(ProviderSessionManager.prototype.createSessionEntry).toHaveBeenCalled();
 });
 
 test('save sessions upon extension deactivation', async () => {
