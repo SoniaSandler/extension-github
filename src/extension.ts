@@ -34,6 +34,5 @@ export async function activate(context: extensionApi.ExtensionContext): Promise<
 
 // Deactivate the extension
 export async function deactivate(): Promise<void> {
-  await providerSessionManager?.saveSessions();
   console.log('stopping GitHub authentication extension');
 }
