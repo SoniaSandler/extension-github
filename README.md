@@ -8,7 +8,7 @@ This extension helps authenticate to GitHub from Podman Desktop to increase the 
 You can install the GitHub authentication extension for Podman Desktop from the extension page using `ghcr.io/podman-desktop/podman-desktop-github-ext:latest`.
 
 ## How to Use
-After installing the extension on Podman Desktop, click on the `Accounts` section in the navigtion bar or go to `Settings` > `Authentication`, click on the `sign in` button for GitHub authentication, and pop-up will show.
+After installing the extension on Podman Desktop, click on the `Accounts` section in the navigation bar or go to `Settings` > `Authentication`, click on the `sign in` button for GitHub authentication, and a pop-up will show.
 There are a couple of ways to authenticate:
 1. Using GitHub Personal Access Token (PAT)
 2. Using web authentication
