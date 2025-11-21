@@ -63,6 +63,8 @@ export class ProviderSessionManager {
     this.ghSessions.push(newAuthSession);
     this.onDidChangeSessions.fire({ added: [newAuthSession] });
 
+    await this.saveSessions();
+
     return newAuthSession;
   }
   
@@ -91,6 +93,8 @@ export class ProviderSessionManager {
     if (this.ghSessions.length === 0 ) {
       await this.createSessionEntry();
     }
+
+    await this.saveSessions();
   }
 
   async registerAuthenticationProvider(): Promise<void> {
