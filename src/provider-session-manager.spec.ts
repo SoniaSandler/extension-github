@@ -163,7 +163,7 @@ test('remove last session', async () => {
   
   const currentSessions = await sessionManager.getSessions();
   expect(currentSessions).toEqual([]);
-  expect(extensionContextMock.secrets.store).toHaveBeenCalledWith(AUTHENTICATION_SESSIONS_KEY, JSON.stringify([]));
+  expect(extensionContextMock.secrets.delete).toHaveBeenCalledWith(AUTHENTICATION_SESSIONS_KEY);
 
 
   expect(extensionApi.authentication.getSession).toHaveBeenCalledWith('github-authentication', [], { createIfNone: false });
