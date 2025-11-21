@@ -34,6 +34,7 @@ const extensionContextMock: extensionApi.ExtensionContext = {
     secrets: {
       get: vi.fn<(key: string) => Promise<string | undefined>>(),
       store: vi.fn<(key: string, value: string) => Promise<void>>(),
+      delete: vi.fn<(key: string) => Promise<void>>(),
     },
 } as unknown as extensionApi.ExtensionContext;
 
@@ -176,4 +177,14 @@ test('saveSessions', async () => {
   await sessionManager.saveSessions();
 
   expect(extensionContextMock.secrets.store).toHaveBeenCalledWith(AUTHENTICATION_SESSIONS_KEY, JSON.stringify([sessionsMock[0]]));
+});
+
+test('saveSessions with no sessions', async () => {
+  // make sure that there are no sessions saved
+  const currentSessions = await sessionManager.getSessions();
+  expect(currentSessions).toEqual([]);
+
+  await sessionManager.saveSessions();
+
+  expect(extensionContextMock.secrets.delete).toHaveBeenCalledWith(AUTHENTICATION_SESSIONS_KEY);
 });

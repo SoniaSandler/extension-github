@@ -115,6 +115,10 @@ export class ProviderSessionManager {
   }
 
   async saveSessions(): Promise<void> {
-    await this.extensionContext.secrets.store(AUTHENTICATION_SESSIONS_KEY, JSON.stringify(this.ghSessions));
+    if (this.ghSessions.length === 0) {
+      await this.extensionContext.secrets.delete(AUTHENTICATION_SESSIONS_KEY);
+    } else {
+      await this.extensionContext.secrets.store(AUTHENTICATION_SESSIONS_KEY, JSON.stringify(this.ghSessions));
+    }
   }
 }
