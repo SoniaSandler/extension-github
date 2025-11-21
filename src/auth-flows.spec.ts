@@ -35,6 +35,9 @@ vi.mock('@octokit/rest', () => ({
             id: 'id1',
             login: 'user1',
           },
+          headers: {
+            'x-oauth-scopes': 'admin:org, read:user, read:project',
+          },
         })),
       },
     },
@@ -116,18 +119,20 @@ test('deviceFlow user canceled', async () => {
 test('PATFlow', async () => {
   const sessionIdBeforeCall = sessionId;
   vi.mocked(extensionApi.window.showInputBox).mockResolvedValue('PATtoken1234');
+  const consoleWarn = vi.spyOn(console, 'warn');
 
   const inputBoxOptions = {
     title: 'Authenticate to GitHub with Personal Access Token',
-    prompt: 'Enter you GitHub Personal Access Token in the input box below. Make sure that this PAT has all the necessary permissions: scope1, scope_2',
+    prompt: 'Enter you GitHub Personal Access Token in the input box. Make sure that this PAT has all the necessary permissions: read:user, write:org, some scope',
     placeHolder: 'Enter PAT',
     password: true,
   };
 
-  const newPATSession = await PATFlow(['scope1', 'scope_2']);
+  const newPATSession = await PATFlow(['read:user', 'write:org', 'some scope']);
 
   expect(extensionApi.window.showInputBox).toBeCalledWith(inputBoxOptions);
   expect(Octokit).toHaveBeenCalledWith({auth: 'PATtoken1234'});
+  expect(consoleWarn).toHaveBeenCalledWith('Some required permission scopes are missing from the PAT scopes: some scope. Please check and update the token as necessary.');
 
   expect(newPATSession).toEqual({
     id: `github-PAT-${sessionIdBeforeCall}`,
@@ -136,7 +141,7 @@ test('PATFlow', async () => {
         id: 'id1',
         label: 'user1',
       },
-      scopes: ['scope1', 'scope_2'],
+      scopes: ['admin:org', 'write:org', 'read:org', 'read:user', 'read:project'],
   });
 });
 
@@ -145,7 +150,7 @@ test('PATFlow error', async () => {
 
   const inputBoxOptions = {
     title: 'Authenticate to GitHub with Personal Access Token',
-    prompt: 'Enter you GitHub Personal Access Token in the input box below. Make sure that this PAT has all the necessary permissions: scope1, scope_2',
+    prompt: 'Enter you GitHub Personal Access Token in the input box. Make sure that this PAT has all the necessary permissions: scope1, scope_2',
     placeHolder: 'Enter PAT',
     password: true,
   };
