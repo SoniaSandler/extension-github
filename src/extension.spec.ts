@@ -44,5 +44,5 @@ test('Session manager created and used upon extension activation', async () => {
 test('save sessions upon extension deactivation', async () => {
   const consoleLogSpy = vi.spyOn(console, 'log');
   await deactivate();
-  expect(consoleLogSpy).toHaveBeenCalledWith('stopping GitHub authentication extension')
+  expect(consoleLogSpy).toHaveBeenCalledWith('stopping GitHub authentication extension');
 });
