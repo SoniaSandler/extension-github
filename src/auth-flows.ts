@@ -26,38 +26,37 @@ import { GITHUB_SCOPES } from './github-scopes';
 export let sessionId = 1;
 
 export interface IGitHubDeviceCodeResponse {
-	device_code: string;
-	user_code: string;
-	verification_uri: string;
-	interval: number;
+  device_code: string;
+  user_code: string;
+  verification_uri: string;
+  interval: number;
   expires_in: number;
 }
 
 // use for oauth device flow https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps#device-flow
 export async function deviceFlow(scopes: string[]): Promise<extensionApi.AuthenticationSession> {
-
   // get device code and user code
-  const deviceCodeUri = extensionApi.Uri.parse('https://github.com/login/device/code').with({query: `client_id=${config.CLIENT_ID}&scope=${scopes.join('%20')}`});
+  const deviceCodeUri = extensionApi.Uri.parse('https://github.com/login/device/code').with({
+    query: `client_id=${config.CLIENT_ID}&scope=${scopes.join('%20')}`,
+  });
 
-  const deviceCodeResponse = await fetch(deviceCodeUri.toString(),
-    {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-      },
+  const deviceCodeResponse = await fetch(deviceCodeUri.toString(), {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
     },
-  );
+  });
 
   if (!deviceCodeResponse.ok) {
     throw new Error(`Failed to get one-time code: ${await deviceCodeResponse.text()}`);
-  };
-  
-  const jsonBody = await deviceCodeResponse.json() as IGitHubDeviceCodeResponse;
+  }
 
+  const jsonBody = (await deviceCodeResponse.json()) as IGitHubDeviceCodeResponse;
 
   // TODO: change expiration time to date now + expires in or remove time altogether
   // show user code in the UI
-  const infoResult = await extensionApi.window.showInformationMessage(`To authenticate, click on the GitHub button below and enter the code ${jsonBody.user_code}.\nThis code will expire in ${Math.round(jsonBody.expires_in/60)} minutes`,
+  const infoResult = await extensionApi.window.showInformationMessage(
+    `To authenticate, click on the GitHub button below and enter the code ${jsonBody.user_code}.\nThis code will expire in ${Math.round(jsonBody.expires_in / 60)} minutes`,
     'Cancel',
     'Continue to GitHub',
   );
@@ -74,11 +73,9 @@ export async function deviceFlow(scopes: string[]): Promise<extensionApi.Authent
     await extensionApi.env.openExternal(deviceLoginUri);
   }
 
-
   // wait and check if user authorized Podman Desktop on GitHub
   return waitForDeviceCodeAccessToken(jsonBody, sessionId++, 20);
-};
-
+}
 
 // use user provided Personal Access Token
 export async function PATFlow(scopes: string[]): Promise<extensionApi.AuthenticationSession> {
@@ -100,13 +97,17 @@ export async function PATFlow(scopes: string[]): Promise<extensionApi.Authentica
   });
   const user = await octokit.rest.users.getAuthenticated();
 
-  const authorizedScopes = user.headers['x-oauth-scopes']?.split(', ').flatMap(scope => GITHUB_SCOPES[scope] ? [scope, ...GITHUB_SCOPES[scope]] : [scope]);
+  const authorizedScopes = user.headers['x-oauth-scopes']
+    ?.split(', ')
+    .flatMap(scope => (GITHUB_SCOPES[scope] ? [scope, ...GITHUB_SCOPES[scope]] : [scope]));
 
   const missingScopes = scopes.filter(scope => !authorizedScopes?.includes(scope));
   if (missingScopes.length > 0) {
-    console.warn(`Some required permission scopes are missing from the PAT scopes: ${missingScopes.join(', ')}. Please check and update the token as necessary.`);
+    console.warn(
+      `Some required permission scopes are missing from the PAT scopes: ${missingScopes.join(', ')}. Please check and update the token as necessary.`,
+    );
   }
-  
+
   return {
     id: `github-PAT-${sessionId++}`,
     accessToken: PATToken,
@@ -116,4 +117,4 @@ export async function PATFlow(scopes: string[]): Promise<extensionApi.Authentica
     },
     scopes: authorizedScopes ?? [],
   };
-} 
+}
