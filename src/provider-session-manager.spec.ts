@@ -19,7 +19,7 @@
 import { resolve } from 'node:path';
 
 import * as extensionApi from '@podman-desktop/api';
-import { beforeEach,expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vitest';
 
 import { deviceFlow, PATFlow } from './auth-flows';
 import { AUTHENTICATION_SESSIONS_KEY, ProviderSessionManager } from './provider-session-manager';
@@ -27,15 +27,15 @@ import { AUTHENTICATION_SESSIONS_KEY, ProviderSessionManager } from './provider-
 vi.mock(import('./auth-flows'));
 
 const extensionContextMock: extensionApi.ExtensionContext = {
-    subscriptions: {
-      push: vi.fn(),
-    },
-    storagePath: resolve('/', 'path', 'to', 'storage'),
-    secrets: {
-      get: vi.fn<(key: string) => Promise<string | undefined>>(),
-      store: vi.fn<(key: string, value: string) => Promise<void>>(),
-      delete: vi.fn<(key: string) => Promise<void>>(),
-    },
+  subscriptions: {
+    push: vi.fn(),
+  },
+  storagePath: resolve('/', 'path', 'to', 'storage'),
+  secrets: {
+    get: vi.fn<(key: string) => Promise<string | undefined>>(),
+    store: vi.fn<(key: string, value: string) => Promise<void>>(),
+    delete: vi.fn<(key: string) => Promise<void>>(),
+  },
 } as unknown as extensionApi.ExtensionContext;
 
 const sessionManager = new ProviderSessionManager(extensionContextMock);
@@ -113,17 +113,22 @@ test('getSessions', async () => {
   expect(currentSessions).toEqual([sessionsMock[0]]);
 });
 
-test.each([{choice: 'Use PAT', flow: PATFlow}, {choice:'Use browser', flow: deviceFlow}, {choice:'Cancel'}])('createSession', async ({choice, flow}) => {
+test.each([
+  { choice: 'Use PAT', flow: PATFlow },
+  { choice: 'Use browser', flow: deviceFlow },
+  { choice: 'Cancel' },
+])('createSession', async ({ choice, flow }) => {
   vi.mocked(extensionApi.window.showInformationMessage).mockResolvedValue(choice);
-  if (flow)
-    vi.mocked(flow).mockResolvedValue({...sessionsMock[1], id: `createSession_${choice}`});
+  if (flow) vi.mocked(flow).mockResolvedValue({ ...sessionsMock[1], id: `createSession_${choice}` });
 
   if (choice === 'Cancel') {
-    await expect(sessionManager.createSession(['scope 1'])).rejects.toThrowError('Could not complete authentication flows');
+    await expect(sessionManager.createSession(['scope 1'])).rejects.toThrowError(
+      'Could not complete authentication flows',
+    );
   } else {
     const newSession = await sessionManager.createSession(['scope 1']);
 
-    expect(newSession).toEqual({...sessionsMock[1], id: `createSession_${choice}`});
+    expect(newSession).toEqual({ ...sessionsMock[1], id: `createSession_${choice}` });
 
     expect(extensionApi.window.showInformationMessage).toBeCalledWith(
       'To authenticate to GitHub from Podman Dekstop you can either provide an exisiting Personal Access Token (PAT) with the nessecary permission or sign in to GitHub from the browser',
@@ -131,7 +136,7 @@ test.each([{choice: 'Use PAT', flow: PATFlow}, {choice:'Use browser', flow: devi
       'Use browser',
       'Cancel',
     );
-    
+
     expect(flow).toHaveBeenCalledWith(['scope 1']);
 
     // check that the newly create session has been added to the sessions list
@@ -147,7 +152,7 @@ test('removeSession', async () => {
   await sessionManager.restoreSessions();
 
   await sessionManager.removeSession('session2');
-  
+
   const currentSessions = await sessionManager.getSessions();
   expect(currentSessions).toEqual([sessionsMock[0], sessionsMock[2]]);
   expect(extensionContextMock.secrets.store).toHaveBeenCalledWith(AUTHENTICATION_SESSIONS_KEY, JSON.stringify([sessionsMock[0], sessionsMock[2]]));
@@ -160,13 +165,15 @@ test('remove last session', async () => {
   await sessionManager.restoreSessions();
 
   await sessionManager.removeSession('session1');
-  
+
   const currentSessions = await sessionManager.getSessions();
   expect(currentSessions).toEqual([]);
   expect(extensionContextMock.secrets.delete).toHaveBeenCalledWith(AUTHENTICATION_SESSIONS_KEY);
 
 
-  expect(extensionApi.authentication.getSession).toHaveBeenCalledWith('github-authentication', [], { createIfNone: false });
+  expect(extensionApi.authentication.getSession).toHaveBeenCalledWith('github-authentication', [], {
+    createIfNone: false,
+  });
 });
 
 test('saveSessions', async () => {
@@ -181,7 +188,10 @@ test('saveSessions', async () => {
 
   await sessionManager.saveSessions();
 
-  expect(extensionContextMock.secrets.store).toHaveBeenCalledWith(AUTHENTICATION_SESSIONS_KEY, JSON.stringify([sessionsMock[0]]));
+  expect(extensionContextMock.secrets.store).toHaveBeenCalledWith(
+    AUTHENTICATION_SESSIONS_KEY,
+    JSON.stringify([sessionsMock[0]]),
+  );
 });
 
 test('saveSessions with no sessions', async () => {

@@ -22,32 +22,33 @@ import * as extensionApi from '@podman-desktop/api';
 import type { IGitHubDeviceCodeResponse } from './auth-flows';
 import { config } from './config';
 
-export async function waitForDeviceCodeAccessToken(deviceResponseJSON: IGitHubDeviceCodeResponse, sessionId: number, attempts: number): Promise<extensionApi.AuthenticationSession> {
+export async function waitForDeviceCodeAccessToken(
+  deviceResponseJSON: IGitHubDeviceCodeResponse,
+  sessionId: number,
+  attempts: number,
+): Promise<extensionApi.AuthenticationSession> {
   const accessTokenUri = extensionApi.Uri.parse('https://github.com/login/oauth/access_token').with({
     query: `client_id=${config.CLIENT_ID}&device_code=${deviceResponseJSON.device_code}&grant_type=urn:ietf:params:oauth:grant-type:device_code`,
   });
 
   let waitInterval = deviceResponseJSON.interval;
 
-	for (let i = 0; i < attempts; i++) {
-
+  for (let i = 0; i < attempts; i++) {
     // wait the minimum time interval before checking if user authorized the app on GitHub
 
     await new Promise(resolve => setTimeout(resolve, waitInterval * 1000));
 
     waitInterval = deviceResponseJSON.interval;
-    
-    let response;
+
+    let response: Response;
 
     try {
-      response = await fetch(accessTokenUri.toString(),
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-          },
+      response = await fetch(accessTokenUri.toString(), {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
         },
-      );
+      });
     } catch {
       continue;
     }
@@ -60,16 +61,21 @@ export async function waitForDeviceCodeAccessToken(deviceResponseJSON: IGitHubDe
 
     if (accessTokenJson.error === 'authorization_pending') {
       continue;
-    } else if (accessTokenJson.error === 'slow_down') {
+    }
 
+    if (accessTokenJson.error === 'slow_down') {
       // a slow_down error includes the new interval needed to wait until the next check
-      waitInterval = accessTokenJson.interval ;
+      waitInterval = accessTokenJson.interval;
 
       continue;
-    } else if (accessTokenJson.error === 'expired_token') {
+    }
+
+    if (accessTokenJson.error === 'expired_token') {
       console.log('Device code expired expired, please start the log in process again');
       break;
-    } else if (accessTokenJson.error === 'access_denied') {
+    }
+
+    if (accessTokenJson.error === 'access_denied') {
       console.log('User cancelled, please start the log in process again');
       break;
     }

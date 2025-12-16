@@ -40,9 +40,7 @@ const compat = new FlatCompat({
   allConfig: js.configs.all,
 });
 
-const TYPESCRIPT_PROJECTS = [
-  './tsconfig.json',
-];
+const TYPESCRIPT_PROJECTS = ['./tsconfig.json'];
 
 export default [
   {
@@ -130,7 +128,6 @@ export default [
         },
       ],
 
-      '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', caughtErrors: 'none' }],
       '@typescript-eslint/no-var-requires': 'off',
       '@typescript-eslint/consistent-type-imports': 'error',
@@ -171,7 +168,6 @@ export default [
       'sonarjs/no-small-switch': 'off',
       // redundant with @typescript-eslint/no-unused-vars
       'sonarjs/no-ignored-exceptions': 'off',
-      'sonarjs/no-nested-functions': 'off',
       'sonarjs/todo-tag': 'off',
       'sonarjs/no-nested-functions': 'off',
       'sonarjs/sonar-max-params': 'off',

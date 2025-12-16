@@ -17,7 +17,7 @@
  ***********************************************************************/
 
 import * as extensionApi from '@podman-desktop/api';
-import { afterEach,beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 
 import { waitForDeviceCodeAccessToken } from './auth-flows-helpers';
 import { config } from './config';
@@ -45,27 +45,29 @@ vi.mock('@octokit/rest', () => ({
 
 // taken from https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps#device-flow
 const deviceCodeResponseExample = {
-  'device_code': '3584d83530557fdd1f46af8289938c8ef79f9dc5',
-  'user_code': 'WDJB-MJHT',
-  'verification_uri': 'https://github.com/login/device',
-  'expires_in': 900,
-  'interval': 1,
+  device_code: '3584d83530557fdd1f46af8289938c8ef79f9dc5',
+  user_code: 'WDJB-MJHT',
+  verification_uri: 'https://github.com/login/device',
+  expires_in: 900,
+  interval: 1,
 };
 
 const tokenResponseExample = {
-  'access_token': 'gho_16C7e42F292c6912E7710c838347Ae178B4a',
-  'token_type': 'bearer',
-  'scope': 'repo,gist',
+  access_token: 'gho_16C7e42F292c6912E7710c838347Ae178B4a',
+  token_type: 'bearer',
+  scope: 'repo,gist',
 };
 
 beforeEach(() => {
   vi.resetAllMocks();
-  global.fetch = fetchMock.mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue(tokenResponseExample) } as unknown as Response);
+  global.fetch = fetchMock.mockResolvedValue({
+    ok: true,
+    json: vi.fn().mockResolvedValue(tokenResponseExample),
+  } as unknown as Response);
 
-  toStringMock.mockReturnValue('github/path/with/query'); 
-  vi.mocked(extensionApi.Uri.parse).mockReturnValue({ with: withMock} as unknown as extensionApi.Uri);
-  vi.mocked(withMock).mockReturnValue({ toString: toStringMock} as unknown as extensionApi.Uri);
-  
+  toStringMock.mockReturnValue('github/path/with/query');
+  vi.mocked(extensionApi.Uri.parse).mockReturnValue({ with: withMock } as unknown as extensionApi.Uri);
+  vi.mocked(withMock).mockReturnValue({ toString: toStringMock } as unknown as extensionApi.Uri);
 });
 
 afterEach(() => {
@@ -73,7 +75,6 @@ afterEach(() => {
 });
 
 test('waitForDeviceCodeAccessToken', async () => {
-
   const authSession = await waitForDeviceCodeAccessToken(deviceCodeResponseExample, 1, 3);
 
   expect(extensionApi.Uri.parse).toHaveBeenCalledWith('https://github.com/login/oauth/access_token');
@@ -86,19 +87,20 @@ test('waitForDeviceCodeAccessToken', async () => {
   expect(authSession).toEqual({
     id: 'github-device-access-token-1',
     accessToken: tokenResponseExample.access_token,
-      account: {
-        id: 'id1',
-        label: 'user1',
-      },
-      scopes: ['repo', 'gist'],
+    account: {
+      id: 'id1',
+      label: 'user1',
+    },
+    scopes: ['repo', 'gist'],
   });
-
 });
 
 test('fetch throws an error, expect waitForDeviceCodeAccessToken to time out after # of given attempts', async () => {
   fetchMock.mockRejectedValue(new Error('some error'));
 
-  await expect(waitForDeviceCodeAccessToken(deviceCodeResponseExample, 1, 3)).rejects.toThrowError('Authorization timed out');
+  await expect(waitForDeviceCodeAccessToken(deviceCodeResponseExample, 1, 3)).rejects.toThrowError(
+    'Authorization timed out',
+  );
 
   expect(extensionApi.Uri.parse).toHaveBeenCalledWith('https://github.com/login/oauth/access_token');
   expect(withMock).toHaveBeenCalledWith({
@@ -111,7 +113,9 @@ test('fetch throws an error, expect waitForDeviceCodeAccessToken to time out aft
 test('waitForDeviceCodeAccessToken times out after # of given attempts', async () => {
   fetchMock.mockResolvedValue({ ok: false } as unknown as Response);
 
-  await expect(waitForDeviceCodeAccessToken(deviceCodeResponseExample, 1, 3)).rejects.toThrowError('Authorization timed out');
+  await expect(waitForDeviceCodeAccessToken(deviceCodeResponseExample, 1, 3)).rejects.toThrowError(
+    'Authorization timed out',
+  );
 
   expect(extensionApi.Uri.parse).toHaveBeenCalledWith('https://github.com/login/oauth/access_token');
   expect(withMock).toHaveBeenCalledWith({

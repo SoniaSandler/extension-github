@@ -27,10 +27,10 @@ import { ProviderSessionManager } from './provider-session-manager';
 vi.mock(import('./provider-session-manager'));
 
 const extensionContextMcok: extensionApi.ExtensionContext = {
-    subscriptions: {
-      push: vi.fn(),
-    },
-    storagePath: resolve('/', 'path', 'to', 'storage'),
+  subscriptions: {
+    push: vi.fn(),
+  },
+  storagePath: resolve('/', 'path', 'to', 'storage'),
 } as unknown as extensionApi.ExtensionContext;
 
 test('Session manager created and used upon extension activation', async () => {

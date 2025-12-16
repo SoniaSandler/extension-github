@@ -18,13 +18,14 @@
 
 import * as extensionApi from '@podman-desktop/api';
 
-import { deviceFlow,PATFlow } from './auth-flows';
+import { deviceFlow, PATFlow } from './auth-flows';
 
 export const AUTHENTICATION_SESSIONS_KEY = 'github-authentication-sessions';
 
 export class ProviderSessionManager {
-  protected onDidChangeSessions = new extensionApi.EventEmitter<extensionApi.AuthenticationProviderAuthenticationSessionsChangeEvent>();
-  
+  protected onDidChangeSessions =
+    new extensionApi.EventEmitter<extensionApi.AuthenticationProviderAuthenticationSessionsChangeEvent>();
+
   protected ghSessions: extensionApi.AuthenticationSession[] = [];
 
   constructor(private extensionContext: extensionApi.ExtensionContext) {}
@@ -42,16 +43,17 @@ export class ProviderSessionManager {
   async createSessionEntry(): Promise<void> {
     await extensionApi.authentication.getSession('github-authentication', [], { createIfNone: false });
   }
-  
+
   async createSession(scopes: string[]): Promise<extensionApi.AuthenticationSession> {
     let newAuthSession: extensionApi.AuthenticationSession;
-  
-    const result = await extensionApi.window.showInformationMessage('To authenticate to GitHub from Podman Dekstop you can either provide an exisiting Personal Access Token (PAT) with the nessecary permission or sign in to GitHub from the browser',
+
+    const result = await extensionApi.window.showInformationMessage(
+      'To authenticate to GitHub from Podman Dekstop you can either provide an exisiting Personal Access Token (PAT) with the nessecary permission or sign in to GitHub from the browser',
       'Use PAT',
       'Use browser',
       'Cancel',
     );
-  
+
     if (result === 'Use PAT') {
       newAuthSession = await PATFlow(scopes);
     } else if (result === 'Use browser') {
@@ -67,18 +69,16 @@ export class ProviderSessionManager {
 
     return newAuthSession;
   }
-  
+
   async getSessions(scopes?: string[]): Promise<readonly extensionApi.AuthenticationSession[]> {
     if (!scopes) {
       return this.ghSessions;
     }
 
-    const matchingSessions = this.ghSessions.filter(session =>
-      scopes.every(scope => session.scopes.includes(scope)),
-    );
+    const matchingSessions = this.ghSessions.filter(session => scopes.every(scope => session.scopes.includes(scope)));
     return matchingSessions;
   }
-  
+
   async removeSession(sessionId: string): Promise<void> {
     const sessionIndex = this.ghSessions.findIndex(session => session.id === sessionId);
     if (sessionIndex === -1) {
@@ -90,7 +90,7 @@ export class ProviderSessionManager {
       removed: [removedSession],
     });
 
-    if (this.ghSessions.length === 0 ) {
+    if (this.ghSessions.length === 0) {
       await this.createSessionEntry();
     }
 
@@ -98,7 +98,6 @@ export class ProviderSessionManager {
   }
 
   async registerAuthenticationProvider(): Promise<void> {
-
     const authDisposable = extensionApi.authentication.registerAuthenticationProvider(
       'github-authentication',
       'GitHub authentication',
