@@ -142,8 +142,10 @@ test.each([
     // check that the newly create session has been added to the sessions list
     const currentSessions = await sessionManager.getSessions();
     expect(currentSessions).toEqual([newSession]);
-    expect(extensionContextMock.secrets.store).toHaveBeenCalledWith(AUTHENTICATION_SESSIONS_KEY, JSON.stringify([newSession]));
-
+    expect(extensionContextMock.secrets.store).toHaveBeenCalledWith(
+      AUTHENTICATION_SESSIONS_KEY,
+      JSON.stringify([newSession]),
+    );
   }
 });
 
@@ -155,7 +157,10 @@ test('removeSession', async () => {
 
   const currentSessions = await sessionManager.getSessions();
   expect(currentSessions).toEqual([sessionsMock[0], sessionsMock[2]]);
-  expect(extensionContextMock.secrets.store).toHaveBeenCalledWith(AUTHENTICATION_SESSIONS_KEY, JSON.stringify([sessionsMock[0], sessionsMock[2]]));
+  expect(extensionContextMock.secrets.store).toHaveBeenCalledWith(
+    AUTHENTICATION_SESSIONS_KEY,
+    JSON.stringify([sessionsMock[0], sessionsMock[2]]),
+  );
 
   await expect(sessionManager.removeSession('123')).rejects.toThrowError('Session with id 123 not found');
 });
@@ -169,7 +174,6 @@ test('remove last session', async () => {
   const currentSessions = await sessionManager.getSessions();
   expect(currentSessions).toEqual([]);
   expect(extensionContextMock.secrets.delete).toHaveBeenCalledWith(AUTHENTICATION_SESSIONS_KEY);
-
 
   expect(extensionApi.authentication.getSession).toHaveBeenCalledWith('github-authentication', [], {
     createIfNone: false,
