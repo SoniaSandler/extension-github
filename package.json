@@ -4,7 +4,7 @@
   "description": "Sign in and authenticate with a GitHub account",
   "version": "0.2.0-next",
   "icon": "icon.png",
-  "publisher": "redhat",
+  "publisher": "podman-desktop",
   "license": "Apache-2.0",
   "engines": {
     "podman-desktop": "^1.19.0"
