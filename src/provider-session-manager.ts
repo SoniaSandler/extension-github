@@ -69,11 +69,18 @@ export class ProviderSessionManager {
     }
 
     if (!newAuthSession) {
-      extensionApi.window.showNotification({title: 'Could not complete GitHub authentication flow', type: 'error', highlight: true});
+      extensionApi.window.showNotification({
+        title: 'Could not complete GitHub authentication flow',
+        type: 'error',
+        highlight: true,
+      });
       throw new Error('Could not complete GitHub authentication flow');
-    } else {
-      extensionApi.window.showNotification({title: 'Successfully authenticated with GitHub', type: 'info', highlight: true});
     }
+    extensionApi.window.showNotification({
+      title: 'Successfully authenticated with GitHub',
+      type: 'info',
+      highlight: true,
+    });
 
     this.ghSessions.push(newAuthSession);
     this.onDidChangeSessions.fire({ added: [newAuthSession] });
