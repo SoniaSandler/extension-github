@@ -123,8 +123,9 @@ test.each([
 
   if (choice === 'Cancel') {
     await expect(sessionManager.createSession(['scope 1'])).rejects.toThrowError(
-      'Could not complete authentication flows',
+      'Could not complete GitHub authentication flow',
     );
+    expect(extensionApi.window.showNotification).toBeCalledWith({title: 'Could not complete GitHub authentication flow', type: 'error', highlight: true});
   } else {
     const newSession = await sessionManager.createSession(['scope 1']);
 
@@ -146,6 +147,8 @@ test.each([
       AUTHENTICATION_SESSIONS_KEY,
       JSON.stringify([newSession]),
     );
+
+    expect(extensionApi.window.showNotification).toBeCalledWith({title: 'Successfully authenticated with GitHub', type: 'info', highlight: true});
   }
 });
 
