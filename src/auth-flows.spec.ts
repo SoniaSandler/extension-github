@@ -1,5 +1,5 @@
 /**********************************************************************
- * Copyright (C) 2025 Red Hat, Inc.
+ * Copyright (C) 2025-2026 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,7 +85,7 @@ test('deviceFlow', async () => {
   expect(withMock).toBeCalledWith({ query: `client_id=${config.CLIENT_ID}&scope=scope1%20scope_2` });
 
   expect(extensionApi.window.showInformationMessage).toBeCalledWith(
-    `To authenticate, click on the GitHub button below and enter the code ${deviceCodeResponseExample.user_code}.\nThis code will expire in ${Math.round(deviceCodeResponseExample.expires_in / 60)} minutes`,
+    `To authenticate, click on the GitHub button below and enter the code ${deviceCodeResponseExample.user_code} :button[fa-paste]{command=github.copy args='["${deviceCodeResponseExample.user_code}"]' title="Copy code to clipboard" size="fa-md"}.\nThis code will expire in ${Math.round(deviceCodeResponseExample.expires_in / 60)} minutes.\n`,
     'Cancel',
     'Continue to GitHub',
   );
