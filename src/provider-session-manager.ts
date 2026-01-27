@@ -70,7 +70,7 @@ export class ProviderSessionManager {
 
     if (!newAuthSession) {
       extensionApi.window.showNotification({
-        title: 'Could not complete GitHub authentication flow. Try again',
+        title: 'Could not complete GitHub authentication flow. Please try again.',
         type: 'error',
         highlight: true,
       });

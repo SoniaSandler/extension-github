@@ -126,7 +126,7 @@ test.each([
       'Could not complete GitHub authentication flow',
     );
     expect(extensionApi.window.showNotification).toBeCalledWith({
-      title: 'Could not complete GitHub authentication flow. Try again',
+      title: 'Could not complete GitHub authentication flow. Please try again.',
       type: 'error',
       highlight: true,
     });
