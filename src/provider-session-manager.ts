@@ -64,7 +64,7 @@ export class ProviderSessionManager {
       console.log(err);
       // we should not show a visible UI notification for authorization timeout
       if (err instanceof Error && err.message === 'Authorization timed out') {
-        throw new Error('Could not complete GitHub authentication flow');
+        throw new Error(err.message);
       }
     }
 
