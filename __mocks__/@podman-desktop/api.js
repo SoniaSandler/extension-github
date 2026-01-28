@@ -73,6 +73,9 @@ const plugin = {
   process: {
     exec: vi.fn(),
   },
+  commands: {
+    registerCommand: vi.fn(),
+  },
 };
 
 module.exports = plugin;
