@@ -45,7 +45,7 @@ export class ProviderSessionManager {
   }
 
   async createSession(scopes: string[]): Promise<extensionApi.AuthenticationSession> {
-    let newAuthSession: extensionApi.AuthenticationSession;
+    let newAuthSession: extensionApi.AuthenticationSession | undefined;
 
     const result = await extensionApi.window.showInformationMessage(
       'To authenticate to GitHub from Podman Dekstop you can either provide an exisiting Personal Access Token (PAT) with the nessecary permission or sign in to GitHub from the browser',
@@ -54,13 +54,33 @@ export class ProviderSessionManager {
       'Cancel',
     );
 
-    if (result === 'Use PAT') {
-      newAuthSession = await PATFlow(scopes);
-    } else if (result === 'Use browser') {
-      newAuthSession = await deviceFlow(scopes);
-    } else {
-      throw new Error('Could not complete authentication flows');
+    try {
+      if (result === 'Use PAT') {
+        newAuthSession = await PATFlow(scopes);
+      } else if (result === 'Use browser') {
+        newAuthSession = await deviceFlow(scopes);
+      }
+    } catch (err: unknown) {
+      console.log(err);
+      // we should not show a visible UI notification for authorization timeout
+      if (err instanceof Error && err.message === 'Authorization timed out') {
+        throw new Error(err.message);
+      }
     }
+
+    if (!newAuthSession) {
+      extensionApi.window.showNotification({
+        title: 'Could not complete GitHub authentication flow. Please try again.',
+        type: 'error',
+        highlight: true,
+      });
+      throw new Error('Could not complete GitHub authentication flow');
+    }
+    extensionApi.window.showNotification({
+      title: 'Successfully authenticated with GitHub',
+      type: 'info',
+      highlight: true,
+    });
 
     this.ghSessions.push(newAuthSession);
     this.onDidChangeSessions.fire({ added: [newAuthSession] });
