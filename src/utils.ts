@@ -27,6 +27,6 @@ export function registerCommands(): void {
   commands.push(copyCommand);
 }
 
-export function deregisterCommands() {
+export function deregisterCommands(): void {
   commands.forEach(command => command.dispose());
 }
