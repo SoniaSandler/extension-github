@@ -18,7 +18,7 @@
 
 import * as extensionApi from '@podman-desktop/api';
 
-const commands: extensionApi.Disposable[] = [];
+let commands: extensionApi.Disposable[] = [];
 
 export function registerCommands(): void {
   const copyCommand = extensionApi.commands.registerCommand('github.copy', async (info: string): Promise<void> => {
@@ -31,4 +31,6 @@ export function deregisterCommands(): void {
   commands.forEach(command => {
     command.dispose();
   });
+
+  commands = [];
 }
