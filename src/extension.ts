@@ -28,9 +28,9 @@ let utils: Utils;
 export async function activate(context: extensionApi.ExtensionContext): Promise<void> {
   console.log('starting GitHub authentication extension');
 
-  const providerSessionManager = new ProviderSessionManager(context);
+  providerSessionManager = new ProviderSessionManager(context);
   utils = new Utils();
-  
+
   utils.registerCommands();
   
   await providerSessionManager.registerAuthenticationProvider();
