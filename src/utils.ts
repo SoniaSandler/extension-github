@@ -18,19 +18,21 @@
 
 import * as extensionApi from '@podman-desktop/api';
 
-let commands: extensionApi.Disposable[] = [];
+export class Utils {
+  protected commands: extensionApi.Disposable[] = [];
 
-export function registerCommands(): void {
-  const copyCommand = extensionApi.commands.registerCommand('github.copy', async (info: string): Promise<void> => {
-    await extensionApi.env.clipboard.writeText(info);
-  });
-  commands.push(copyCommand);
-}
+  registerCommands(): void {
+    const copyCommand = extensionApi.commands.registerCommand('github.copy', async (info: string): Promise<void> => {
+      await extensionApi.env.clipboard.writeText(info);
+    });
+    this.commands.push(copyCommand);
+  }
 
-export function deregisterCommands(): void {
-  commands.forEach(command => {
-    command.dispose();
-  });
+  deregisterCommands(): void {
+    this.commands.forEach(command => {
+      command.dispose();
+    });
 
-  commands = [];
+    this.commands = [];
+  }
 }

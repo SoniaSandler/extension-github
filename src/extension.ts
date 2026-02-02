@@ -19,16 +19,20 @@
 import type * as extensionApi from '@podman-desktop/api';
 
 import { ProviderSessionManager } from './provider-session-manager';
-import { deregisterCommands, registerCommands } from './utils';
+import { Utils } from './utils';
 
 let providerSessionManager: ProviderSessionManager;
+let utils: Utils;
 
 // Initialize the activation of the extension.
 export async function activate(context: extensionApi.ExtensionContext): Promise<void> {
   console.log('starting GitHub authentication extension');
 
-  providerSessionManager = new ProviderSessionManager(context);
-  registerCommands();
+  const providerSessionManager = new ProviderSessionManager(context);
+  utils = new Utils();
+  
+  utils.registerCommands();
+  
   await providerSessionManager.registerAuthenticationProvider();
   await providerSessionManager.restoreSessions();
   await providerSessionManager.createSessionEntry();
@@ -36,6 +40,6 @@ export async function activate(context: extensionApi.ExtensionContext): Promise<
 
 // Deactivate the extension
 export async function deactivate(): Promise<void> {
-  deregisterCommands();
+  utils.deregisterCommands();
   console.log('stopping GitHub authentication extension');
 }
