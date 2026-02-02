@@ -32,7 +32,7 @@ export async function activate(context: extensionApi.ExtensionContext): Promise<
   utils = new Utils();
 
   utils.registerCommands();
-  
+
   await providerSessionManager.registerAuthenticationProvider();
   await providerSessionManager.restoreSessions();
   await providerSessionManager.createSessionEntry();

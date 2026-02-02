@@ -18,10 +18,11 @@
 
 import * as extensionApi from '@podman-desktop/api';
 import { beforeEach, expect, test, vi } from 'vitest';
+
 import { Utils } from './utils';
 
 class UtilsTest extends Utils {
-  public commandsNumber (): number {
+  public commandsNumber(): number {
     return this.commands.length;
   }
 }
@@ -35,7 +36,7 @@ beforeEach(() => {
 });
 
 test('register commands', () => {
-  vi.mocked(extensionApi.commands.registerCommand).mockReturnValue({ dispose: disposeMock});
+  vi.mocked(extensionApi.commands.registerCommand).mockReturnValue({ dispose: disposeMock });
   utils.registerCommands();
 
   expect(extensionApi.commands.registerCommand).toHaveBeenCalledTimes(1);
@@ -48,4 +49,4 @@ test('deregister commands', () => {
 
   expect(disposeMock).toHaveBeenCalledTimes(1);
   expect(utils.commandsNumber()).toBe(0);
-})
+});
