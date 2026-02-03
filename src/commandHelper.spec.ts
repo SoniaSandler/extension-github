@@ -27,16 +27,17 @@ class CommandHelperTest extends CommandHelper {
   }
 }
 
-const commandHelper = new CommandHelperTest();
+let commandHelper: CommandHelperTest;
 
 const disposeMock = vi.fn();
 
 beforeEach(() => {
   vi.resetAllMocks();
+  commandHelper = new CommandHelperTest();
+  vi.mocked(extensionApi.commands.registerCommand).mockReturnValue({ dispose: disposeMock });
 });
 
 test('register commands', () => {
-  vi.mocked(extensionApi.commands.registerCommand).mockReturnValue({ dispose: disposeMock });
   commandHelper.registerCommands();
 
   expect(extensionApi.commands.registerCommand).toHaveBeenCalledTimes(1);
@@ -45,6 +46,7 @@ test('register commands', () => {
 });
 
 test('deregister commands', () => {
+  commandHelper.registerCommands();
   commandHelper.deregisterCommands();
 
   expect(disposeMock).toHaveBeenCalledTimes(1);

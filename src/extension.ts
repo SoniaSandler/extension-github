@@ -18,8 +18,8 @@
 
 import type * as extensionApi from '@podman-desktop/api';
 
-import { ProviderSessionManager } from './provider-session-manager';
 import { CommandHelper } from './CommandHelper';
+import { ProviderSessionManager } from './provider-session-manager';
 
 let providerSessionManager: ProviderSessionManager;
 let commandHelper: CommandHelper;
