@@ -19,15 +19,15 @@
 import * as extensionApi from '@podman-desktop/api';
 import { beforeEach, expect, test, vi } from 'vitest';
 
-import { Utils } from './utils';
+import { CommandHelper } from './CommandHelper';
 
-class UtilsTest extends Utils {
+class CommandHelperTest extends CommandHelper {
   public commandsNumber(): number {
     return this.commands.length;
   }
 }
 
-const utils = new UtilsTest();
+const commandHelper = new CommandHelperTest();
 
 const disposeMock = vi.fn();
 
@@ -37,16 +37,16 @@ beforeEach(() => {
 
 test('register commands', () => {
   vi.mocked(extensionApi.commands.registerCommand).mockReturnValue({ dispose: disposeMock });
-  utils.registerCommands();
+  commandHelper.registerCommands();
 
   expect(extensionApi.commands.registerCommand).toHaveBeenCalledTimes(1);
   expect(extensionApi.commands.registerCommand).toHaveBeenCalledWith('github.copy', expect.any(Function));
-  expect(utils.commandsNumber()).toBe(1);
+  expect(commandHelper.commandsNumber()).toBe(1);
 });
 
 test('deregister commands', () => {
-  utils.deregisterCommands();
+  commandHelper.deregisterCommands();
 
   expect(disposeMock).toHaveBeenCalledTimes(1);
-  expect(utils.commandsNumber()).toBe(0);
+  expect(commandHelper.commandsNumber()).toBe(0);
 });

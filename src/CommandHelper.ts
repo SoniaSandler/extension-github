@@ -18,7 +18,7 @@
 
 import * as extensionApi from '@podman-desktop/api';
 
-export class Utils {
+export class CommandHelper {
   protected commands: extensionApi.Disposable[] = [];
 
   registerCommands(): void {
