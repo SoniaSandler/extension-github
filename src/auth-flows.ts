@@ -1,5 +1,5 @@
 /**********************************************************************
- * Copyright (C) 2025 Red Hat, Inc.
+ * Copyright (C) 2025-2026 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,8 +55,9 @@ export async function deviceFlow(scopes: string[]): Promise<extensionApi.Authent
 
   // TODO: change expiration time to date now + expires in or remove time altogether
   // show user code in the UI
+
   const infoResult = await extensionApi.window.showInformationMessage(
-    `To authenticate, click on the GitHub button below and enter the code ${jsonBody.user_code}.\nThis code will expire in ${Math.round(jsonBody.expires_in / 60)} minutes`,
+    `To authenticate, click on the GitHub button below and enter the code ${jsonBody.user_code} :button[fa-paste]{command=github.copy args='["${jsonBody.user_code}"]' title="Copy code to clipboard" size="fa-md"}.\nThis code will expire in ${Math.round(jsonBody.expires_in / 60)} minutes.\n`,
     'Cancel',
     'Continue to GitHub',
   );

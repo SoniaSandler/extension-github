@@ -18,7 +18,7 @@
 
 import { resolve } from 'node:path';
 
-import type * as extensionApi from '@podman-desktop/api';
+import * as extensionApi from '@podman-desktop/api';
 import { expect, test, vi } from 'vitest';
 
 import { activate, deactivate } from './extension';
@@ -34,6 +34,7 @@ const extensionContextMcok: extensionApi.ExtensionContext = {
 } as unknown as extensionApi.ExtensionContext;
 
 test('Session manager created and used upon extension activation', async () => {
+  vi.mocked(extensionApi.commands.registerCommand).mockReturnValue({ dispose: vi.fn() });
   await activate(extensionContextMcok);
   expect(ProviderSessionManager).toHaveBeenCalledWith(extensionContextMcok);
   expect(ProviderSessionManager.prototype.registerAuthenticationProvider).toHaveBeenCalled();
@@ -43,6 +44,7 @@ test('Session manager created and used upon extension activation', async () => {
 
 test('save sessions upon extension deactivation', async () => {
   const consoleLogSpy = vi.spyOn(console, 'log');
+  vi.mocked(extensionApi.commands.registerCommand).mockReturnValue({ dispose: vi.fn() });
   await deactivate();
   expect(consoleLogSpy).toHaveBeenCalledWith('stopping GitHub authentication extension');
 });
